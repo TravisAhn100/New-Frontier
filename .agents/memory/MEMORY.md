@@ -1,0 +1,1 @@
+- [SVG masthead crop offset](svg-masthead-crop.md) — all SVG content is inside transform(0,349); logo at abs y≈393–550; use margin-top:-370px at 90% width to crop correctly.

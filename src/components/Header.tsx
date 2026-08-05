@@ -13,38 +13,39 @@ export default function Header() {
   const dateStr = useKSTDate()
 
   return (
-    <header>
-      {/* Level 1 – top strip: date + edition tag */}
+    <header className="site-header">
+      {/* Level 1 – top strip: date + edition switcher */}
       <div className="header-top">
-        <div className="container">
-          <span className="header-top__date">{dateStr}</span>
-          <span className="header-top__edition">International Edition</span>
+        <div className="container header-top__inner">
+          <span className="header-top__date">{dateStr.toUpperCase()}</span>
+          <span className="header-top__edition">INTERNATIONAL / KOREAN</span>
         </div>
       </div>
 
-      {/* Level 2 – masthead */}
+      {/* Level 2 – masthead with real SVG logo */}
       <div className="header-masthead">
         <img
           className="header-masthead__logo"
-          src="/assets/new-frontier-header.svg"
+          src="/assets/new-frontier-header-white.svg"
           alt="New Frontier"
         />
-        <p className="header-masthead__tagline">Student Journalism · International Edition</p>
       </div>
 
       {/* Level 3 – section navigation */}
       <nav className="header-nav" aria-label="Section navigation">
-        <div className="container">
-          {NAV_LINKS.map(({ to, label }) => (
-            <NavLink
-              key={to}
-              to={to}
-              className={({ isActive }) =>
-                'header-nav__link' + (isActive ? ' active' : '')
-              }
-            >
-              {label}
-            </NavLink>
+        <div className="container header-nav__inner">
+          {NAV_LINKS.map(({ to, label }, i) => (
+            <span key={to} className="header-nav__item">
+              {i > 0 && <span className="header-nav__divider" aria-hidden="true" />}
+              <NavLink
+                to={to}
+                className={({ isActive }) =>
+                  'header-nav__link' + (isActive ? ' active' : '')
+                }
+              >
+                {label}
+              </NavLink>
+            </span>
           ))}
         </div>
       </nav>
