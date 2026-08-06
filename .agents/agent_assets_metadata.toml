@@ -1,0 +1,9 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "8qCWdlmsIr6QHS2UngjX3"
+uri = "file://attached_assets/generated_videos/new-frontier-intro.mp4"
+type = "video"
+title = "New Frontier International — Animated Intro"
+description = "An 8-second cinematic intro with bold block letters, ink-press effects, teal and pink palette, and headline flashes ending on the masthead banner."
