@@ -22,13 +22,16 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Level 2 – masthead with real SVG logo */}
+      {/* Level 2 – masthead with real SVG logo + tagline */}
       <div className="header-masthead">
         <img
           className="header-masthead__logo"
           src="/assets/new-frontier-header-white.svg"
           alt="New Frontier"
         />
+        <p className="header-masthead__tagline">
+          The Owl of Minerva Flies at Dusk
+        </p>
       </div>
 
       {/* Level 3 – section navigation */}
