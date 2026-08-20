@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 import Layout from './components/Layout'
+import ArticlePage from './pages/ArticlePage'
 import Home from './pages/Home'
 import SectionPage from './pages/SectionPage'
 import type { EditionKey, SectionKey } from './types/content'
@@ -10,6 +11,7 @@ function editionRoutes(edition: EditionKey, prefix: string) {
   return (
     <Route path={prefix} element={<Layout />}>
       <Route index element={<Home edition={edition} />} />
+      <Route path="article/:slug" element={<ArticlePage edition={edition} />} />
       {sections.map((section) => (
         <Route
           key={`${edition}-${section}`}

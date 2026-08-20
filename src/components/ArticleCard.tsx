@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { getSectionPath, siteConfig } from '../data/siteConfig'
+import { getArticlePath, getSectionPath, siteConfig } from '../data/siteConfig'
 import type { Article, ArticleLayout, EditionKey } from '../types/content'
 
 interface ArticleCardProps {
@@ -24,6 +24,7 @@ export default function ArticleCard({
 }: ArticleCardProps) {
   const config = siteConfig[edition]
   const sectionPath = article.section ? getSectionPath(edition, article.section) : undefined
+  const articlePath = article.slug ? getArticlePath(edition, article.slug) : undefined
   const className = `article-card article-card--${variant}`
   const articleImage = article.image ? (
     <img
@@ -40,8 +41,8 @@ export default function ArticleCard({
   return (
     <article className={className}>
       {articleImage && variant !== 'brief' && (
-        sectionPath ? (
-          <Link className="article-card__image-link" to={sectionPath} aria-label={article.title}>
+        articlePath ? (
+          <Link className="article-card__image-link" to={articlePath} aria-label={article.title}>
             {articleImage}
           </Link>
         ) : (
@@ -56,7 +57,7 @@ export default function ArticleCard({
           </Link>
         )}
         <h2 className="article-card__headline">
-          {sectionPath ? <Link to={sectionPath}>{article.title}</Link> : article.title}
+          {articlePath ? <Link to={articlePath}>{article.title}</Link> : article.title}
         </h2>
         {article.summary && <p className="article-card__summary">{article.summary}</p>}
         <p className="article-card__meta">

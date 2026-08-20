@@ -12,6 +12,7 @@ const images = {
 export const internationalArticles: Article[] = [
   {
     id: 'Reflecting on Citizens Utd. v. FEC Sixteen Years Later',
+    slug: 'reflecting-on-citizens-utd-v-fec-sixteen-years-later',
     edition: 'international',
     title: 'Reflecting on Citizens Utd. v. FEC Sixteen Years Later',
     body: [
