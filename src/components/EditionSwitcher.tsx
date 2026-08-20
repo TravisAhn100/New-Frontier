@@ -6,6 +6,9 @@ interface EditionSwitcherProps {
 }
 
 export default function EditionSwitcher({ edition }: EditionSwitcherProps) {
+  const internationalLabel = edition === 'korean' ? '국제' : 'International'
+  const koreanLabel = edition === 'korean' ? '한국' : 'Korean'
+
   return (
     <nav className="edition-switcher" aria-label="Choose edition">
       <NavLink
@@ -14,7 +17,7 @@ export default function EditionSwitcher({ edition }: EditionSwitcherProps) {
         aria-current={edition === 'international' ? 'page' : undefined}
         className={edition === 'international' ? 'is-active' : undefined}
       >
-        International
+        {internationalLabel}
       </NavLink>
       <span aria-hidden="true">/</span>
       <NavLink
@@ -23,7 +26,7 @@ export default function EditionSwitcher({ edition }: EditionSwitcherProps) {
         aria-current={edition === 'korean' ? 'page' : undefined}
         className={edition === 'korean' ? 'is-active' : undefined}
       >
-        Korean
+        {koreanLabel}
       </NavLink>
     </nav>
   )
