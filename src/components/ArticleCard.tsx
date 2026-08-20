@@ -37,7 +37,6 @@ export default function ArticleCard({
             width="1200"
             height="675"
             loading={imagePriority ? 'eager' : 'lazy'}
-            fetchPriority={imagePriority ? 'high' : 'auto'}
           />
         </Link>
       )}
