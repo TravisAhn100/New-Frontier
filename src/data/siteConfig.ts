@@ -48,7 +48,7 @@ export const siteConfig: Record<EditionKey, EditionConfig> = {
     publicationName: 'New Frontier',
     editionLabel: 'Korean',
     homePath: '/ko',
-    masthead: '/assets/NF_header_Korean.svg',
+    masthead: '/assets/NF_header_Korean_cropped.svg',
     mastheadAlt: '뉴 프론티어 — 미네르바의 부엉이는 황혼에 날개를 편다',
     dateLocale: 'ko-KR',
     dateTimeZone: 'Asia/Seoul',
@@ -66,6 +66,11 @@ export const siteConfig: Record<EditionKey, EditionConfig> = {
 export function getSectionPath(edition: EditionKey, section: SectionKey) {
   const prefix = edition === 'korean' ? '/ko' : ''
   return `${prefix}/${section}`
+}
+
+export function getArticlePath(edition: EditionKey, slug: string) {
+  const prefix = edition === 'korean' ? '/ko' : ''
+  return `${prefix}/article/${slug}`
 }
 
 export function formatPublicationDate(edition: EditionKey, date = new Date()) {

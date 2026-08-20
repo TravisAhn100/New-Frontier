@@ -83,13 +83,7 @@ a:focus-visible {
 }
 
 .site-shell--korean .header-top__inner {
-  font-size: 0.75rem;
-}
-
-.site-shell--korean .masthead-image {
-  width: 96%;
-  height: 96%;
-  transform: translateY(-1px);
+  font-size: 0.82rem;
 }
 
 .site-main {
@@ -198,7 +192,7 @@ a:focus-visible {
 }
 
 .site-shell--korean .section-navigation__link {
-  font-size: clamp(0.88rem, 1.42vw, 1.1rem);
+  font-size: clamp(0.96rem, 1.5vw, 1.17rem);
 }
 
 .section-navigation__link:last-child {
@@ -452,6 +446,96 @@ a:focus-visible {
   min-height: min(50vh, 480px);
 }
 
+.article-page {
+  width: min(100%, 940px);
+  margin-inline: auto;
+  padding-block: clamp(38px, 5vw, 70px) clamp(58px, 7vw, 96px);
+}
+
+.article-page__header {
+  padding: 18px 0 24px;
+  border-top: 5px solid var(--teal);
+}
+
+.article-page__section {
+  display: inline-block;
+  margin-bottom: 10px;
+  color: var(--magenta);
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.article-page__section:hover {
+  color: var(--teal-deep);
+  text-decoration: underline;
+  text-decoration-color: var(--yellow);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 4px;
+}
+
+.article-page__header h1 {
+  max-width: 900px;
+  margin: 0;
+  font-size: clamp(2.4rem, 5.4vw, 4.8rem);
+  letter-spacing: -0.04em;
+  line-height: 0.98;
+}
+
+.article-page__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.42rem;
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.article-page__image {
+  width: 100%;
+  height: auto;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+.article-page__body {
+  width: min(100%, 720px);
+  min-height: 1px;
+  margin: clamp(30px, 4vw, 48px) auto 0;
+}
+
+.article-page__body p {
+  margin: 0 0 1.35em;
+  font-size: clamp(1.05rem, 1.45vw, 1.18rem);
+  line-height: 1.72;
+}
+
+.article-not-found {
+  min-height: min(50vh, 480px);
+  padding-block: clamp(54px, 8vw, 100px);
+}
+
+.article-not-found h1 {
+  margin: 0 0 18px;
+  font-size: clamp(2.2rem, 5vw, 4rem);
+}
+
+.article-not-found a {
+  color: var(--teal-deep);
+  font-family: var(--sans);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--yellow);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 4px;
+}
+
 .site-footer {
   border-top: 5px solid var(--teal);
   color: #ffffff;
@@ -570,11 +654,11 @@ a:focus-visible {
   }
 
   .site-shell--korean .header-top__inner {
-    font-size: 0.62rem;
+    font-size: 0.68rem;
   }
 
   .site-shell--korean .section-navigation__link {
-    font-size: clamp(0.63rem, 2.95vw, 0.75rem);
+    font-size: clamp(0.68rem, 3.1vw, 0.8rem);
   }
 
   .homepage-grid__lead {
