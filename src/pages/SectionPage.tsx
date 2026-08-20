@@ -1,19 +1,42 @@
+import ArticleCard from '../components/ArticleCard'
+import { articlesByEdition } from '../data/articles'
+import { siteConfig } from '../data/siteConfig'
+import type { EditionKey, SectionKey } from '../types/content'
+
 interface SectionPageProps {
-  section: string
+  edition: EditionKey
+  section: SectionKey
 }
 
-export default function SectionPage({ section }: SectionPageProps) {
+export default function SectionPage({ edition, section }: SectionPageProps) {
+  const label = siteConfig[edition].navigation[section]
+
+  if (section === 'info') {
+    return (
+      <section className="info-page" aria-labelledby="info-title">
+        <h1 className="visually-hidden" id="info-title">{label}</h1>
+      </section>
+    )
+  }
+
+  const articles = articlesByEdition[edition].filter((article) => article.section === section)
+
   return (
-    <section className="section-page">
-      <div className="section-page__rule" />
-      <h1 className="section-page__title">{section}</h1>
-      <div className="section-page__placeholder">
-        <p>
-          <strong>{section}</strong> articles will appear here.
-        </p>
-        <p style={{ marginTop: '0.5rem' }}>
-          This is a placeholder page for the prototype.
-        </p>
+    <section className="section-page" aria-labelledby="section-title">
+      <header className="section-page__header">
+        <p>{edition === 'korean' ? '섹션' : 'Section'}</p>
+        <h1 id="section-title">{label}</h1>
+      </header>
+      <div className="section-page__grid">
+        {articles.map((article, index) => (
+          <ArticleCard
+            key={article.id}
+            article={article}
+            edition={edition}
+            variant="standard"
+            imagePriority={index === 0}
+          />
+        ))}
       </div>
     </section>
   )
