@@ -55,7 +55,7 @@ export const siteConfig: Record<EditionKey, EditionConfig> = {
     navigation: {
       news: '뉴스',
       culture: '문화',
-      opinion: '컬럼',
+      opinion: '칼럼',
       school: '학교',
       info: '정보',
     },
