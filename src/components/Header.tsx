@@ -1,57 +1,33 @@
-import { NavLink } from 'react-router-dom'
-import { useKSTDate } from '../hooks/useKSTDate'
+import { Link } from 'react-router-dom'
+import { formatPublicationDate, siteConfig } from '../data/siteConfig'
+import type { EditionKey } from '../types/content'
+import EditionSwitcher from './EditionSwitcher'
+import SectionNavigation from './SectionNavigation'
 
-const NAV_LINKS = [
-  { to: '/news',    label: 'News' },
-  { to: '/culture', label: 'Culture' },
-  { to: '/opinion', label: 'Opinion' },
-  { to: '/school',  label: 'School' },
-  { to: '/info',    label: 'Info' },
-]
+interface HeaderProps {
+  edition: EditionKey
+}
 
-export default function Header() {
-  const dateStr = useKSTDate()
+export default function Header({ edition }: HeaderProps) {
+  const config = siteConfig[edition]
+  const now = new Date()
 
   return (
     <header className="site-header">
-      {/* Level 1 – top strip: date + edition switcher */}
       <div className="header-top">
-        <div className="container header-top__inner">
-          <span className="header-top__date">{dateStr.toUpperCase()}</span>
-          <span className="header-top__edition">INTERNATIONAL / KOREAN</span>
+        <div className="header-top__inner page-width">
+          <time dateTime={now.toISOString()}>{formatPublicationDate(edition, now)}</time>
+          <EditionSwitcher edition={edition} />
         </div>
       </div>
 
-      {/* Level 2 – masthead with real SVG logo + tagline */}
-      <div className="header-masthead">
-        <img
-          className="header-masthead__logo"
-          src="/assets/new-frontier-header-white.svg"
-          alt="New Frontier"
-        />
-        <p className="header-masthead__tagline">
-          The Owl of Minerva Flies at Dusk
-        </p>
+      <div className="masthead-row page-width">
+        <Link className="masthead-link" to={config.homePath} aria-label={`${config.publicationName} home`}>
+          <img className="masthead-image" src={config.masthead} alt={config.mastheadAlt} />
+        </Link>
       </div>
 
-      {/* Level 3 – section navigation */}
-      <nav className="header-nav" aria-label="Section navigation">
-        <div className="container header-nav__inner">
-          {NAV_LINKS.map(({ to, label }, i) => (
-            <span key={to} className="header-nav__item">
-              {i > 0 && <span className="header-nav__divider" aria-hidden="true" />}
-              <NavLink
-                to={to}
-                className={({ isActive }) =>
-                  'header-nav__link' + (isActive ? ' active' : '')
-                }
-              >
-                {label}
-              </NavLink>
-            </span>
-          ))}
-        </div>
-      </nav>
+      <SectionNavigation edition={edition} />
     </header>
   )
 }
