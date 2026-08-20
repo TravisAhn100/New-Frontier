@@ -76,11 +76,19 @@ a:focus-visible {
   flex-direction: column;
 }
 
+.site-shell--korean {
+  --serif: 'Do Hyeon', sans-serif;
+  --sans: 'Do Hyeon', sans-serif;
+  font-family: 'Do Hyeon', sans-serif;
+}
+
 .site-main {
   flex: 1;
 }
 
 .site-header {
+  --masthead-area-height: clamp(128px, 15vw, 174px);
+  --section-navigation-height: clamp(54px, 6vw, 66px);
   color: #ffffff;
   background: var(--teal);
 }
@@ -127,21 +135,25 @@ a:focus-visible {
 
 .masthead-row {
   display: flex;
+  height: var(--masthead-area-height);
+  align-items: center;
   justify-content: center;
-  padding-block: clamp(24px, 3.4vw, 46px);
+  padding-block: clamp(12px, 1.6vw, 22px);
 }
 
 .masthead-link {
-  display: block;
+  display: flex;
   width: min(78vw, 780px);
+  height: 100%;
   max-width: 100%;
+  align-items: center;
+  justify-content: center;
   line-height: 0;
 }
 
 .masthead-image {
   width: 100%;
-  height: auto;
-  aspect-ratio: 1190.25 / 190;
+  height: 100%;
   object-fit: contain;
 }
 
@@ -159,7 +171,7 @@ a:focus-visible {
 .section-navigation__link {
   display: flex;
   min-width: 0;
-  min-height: 66px;
+  min-height: var(--section-navigation-height);
   align-items: center;
   justify-content: center;
   border-left: 1px solid rgba(255, 255, 255, 0.72);
@@ -169,6 +181,10 @@ a:focus-visible {
   letter-spacing: 0.12em;
   text-align: center;
   text-transform: uppercase;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease,
+    border-color 180ms ease;
 }
 
 .section-navigation__link:last-child {
