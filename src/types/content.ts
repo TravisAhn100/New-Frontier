@@ -6,15 +6,17 @@ export type ArticleLayout = 'lead' | 'secondary' | 'standard' | 'brief'
 
 export interface Article {
   id: string
-  slug: string
+  slug?: string
   edition: EditionKey
-  section: Exclude<SectionKey, 'info'>
+  section?: Exclude<SectionKey, 'info'>
   title: string
   summary?: string
+  body?: string[]
   image?: string
   imageAlt?: string
+  imagePosition?: 'center' | 'top'
   author: string
-  publishedAt: string
+  publishedAt?: string
   featured?: boolean
   layout: ArticleLayout
 }

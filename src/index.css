@@ -82,6 +82,16 @@ a:focus-visible {
   font-family: 'Do Hyeon', sans-serif;
 }
 
+.site-shell--korean .header-top__inner {
+  font-size: 0.75rem;
+}
+
+.site-shell--korean .masthead-image {
+  width: 96%;
+  height: 96%;
+  transform: translateY(-1px);
+}
+
 .site-main {
   flex: 1;
 }
@@ -185,6 +195,10 @@ a:focus-visible {
     background-color 180ms ease,
     color 180ms ease,
     border-color 180ms ease;
+}
+
+.site-shell--korean .section-navigation__link {
+  font-size: clamp(0.88rem, 1.42vw, 1.1rem);
 }
 
 .section-navigation__link:last-child {
@@ -553,6 +567,14 @@ a:focus-visible {
     padding-inline: 3px;
     font-size: clamp(0.59rem, 2.8vw, 0.72rem);
     letter-spacing: 0.045em;
+  }
+
+  .site-shell--korean .header-top__inner {
+    font-size: 0.62rem;
+  }
+
+  .site-shell--korean .section-navigation__link {
+    font-size: clamp(0.63rem, 2.95vw, 0.75rem);
   }
 
   .homepage-grid__lead {
