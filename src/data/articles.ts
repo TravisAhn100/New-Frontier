@@ -1,4 +1,27 @@
-import type { Article, EditionKey } from '../types/content'
+import type {
+  Article,
+  ArticleBlock,
+  ArticleLayout,
+  ArticleSection,
+  EditionKey,
+} from '../types/content'
+
+interface LegacyArticleSeed {
+  id: string
+  slug?: string
+  edition: EditionKey
+  section?: ArticleSection
+  title: string
+  summary?: string
+  body?: string[]
+  image?: string
+  imageAlt?: string
+  imagePosition?: 'center' | 'top'
+  author: string
+  publishedAt?: string
+  featured?: boolean
+  layout: ArticleLayout
+}
 
 const images = {
   campus: 'https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=1600&q=82',
@@ -9,7 +32,7 @@ const images = {
   community: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=80',
 }
 
-export const internationalArticles: Article[] = [
+const internationalSeeds: LegacyArticleSeed[] = [
   {
     id: 'Reflecting on Citizens Utd. v. FEC Sixteen Years Later',
     slug: 'reflecting-on-citizens-utd-v-fec-sixteen-years-later',
@@ -119,7 +142,7 @@ export const internationalArticles: Article[] = [
   },
 ]
 
-export const koreanArticles: Article[] = [
+const koreanSeeds: LegacyArticleSeed[] = [
   {
     id: 'ko-news-campus-plan',
     slug: 'student-council-campus-plan',
@@ -222,6 +245,53 @@ export const koreanArticles: Article[] = [
     layout: 'brief',
   },
 ]
+
+function slugify(value: string) {
+  return value
+    .normalize('NFKD')
+    .toLowerCase()
+    .replace(/[^a-z0-9가-힣]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
+function normalizeSeedArticle(seed: LegacyArticleSeed): Article {
+  const publishedDate = seed.publishedAt ?? '2026-08-20'
+  const timestamp = `${publishedDate}T09:00:00+09:00`
+  const authorId = slugify(seed.author) || `author-${seed.id}`
+  const body: ArticleBlock[] = (seed.body ?? []).map((content, index) => ({
+    id: `${seed.id}-paragraph-${index + 1}`,
+    type: 'paragraph',
+    content,
+  }))
+
+  return {
+    id: seed.id,
+    slug: seed.slug ?? slugify(seed.title),
+    title: seed.title,
+    subtitle: seed.summary ?? '',
+    edition: seed.edition,
+    section: seed.section,
+    topics: [],
+    topicSlugs: [],
+    authors: [{ id: authorId, name: seed.author }],
+    primaryAuthorId: authorId,
+    coverImage: seed.image,
+    coverImageCaption: '',
+    coverImageCredit: '',
+    coverImageAlt: seed.imageAlt ?? '',
+    coverImagePosition: seed.imagePosition,
+    body,
+    createdAt: timestamp,
+    updatedAt: timestamp,
+    publishedAt: seed.publishedAt,
+    status: 'published',
+    featured: seed.featured ?? false,
+    layout: seed.layout,
+  }
+}
+
+export const internationalArticles = internationalSeeds.map(normalizeSeedArticle)
+export const koreanArticles = koreanSeeds.map(normalizeSeedArticle)
 
 export const articlesByEdition: Record<EditionKey, Article[]> = {
   international: internationalArticles,

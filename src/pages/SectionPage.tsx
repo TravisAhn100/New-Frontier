@@ -1,5 +1,5 @@
 import ArticleCard from '../components/ArticleCard'
-import { articlesByEdition } from '../data/articles'
+import { useArticles } from '../context/ArticlesContext'
 import { siteConfig } from '../data/siteConfig'
 import type { EditionKey, SectionKey } from '../types/content'
 
@@ -9,6 +9,7 @@ interface SectionPageProps {
 }
 
 export default function SectionPage({ edition, section }: SectionPageProps) {
+  const { articles: allArticles } = useArticles()
   const label = siteConfig[edition].navigation[section]
 
   if (section === 'info') {
@@ -19,7 +20,11 @@ export default function SectionPage({ edition, section }: SectionPageProps) {
     )
   }
 
-  const articles = articlesByEdition[edition].filter((article) => article.section === section)
+  const articles = allArticles.filter((article) => (
+    article.edition === edition
+    && article.status === 'published'
+    && article.section === section
+  ))
 
   return (
     <section className="section-page" aria-labelledby="section-title">

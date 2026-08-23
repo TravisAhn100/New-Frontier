@@ -15,9 +15,12 @@ export default function Header({ edition }: HeaderProps) {
   return (
     <header className="site-header">
       <div className="header-top">
-        <div className="header-top__inner page-width">
+        <div className={`header-top__inner page-width header-top__inner--${edition}`}>
           <time dateTime={now.toISOString()}>{formatPublicationDate(edition, now)}</time>
           <EditionSwitcher edition={edition} />
+          {edition === 'international' && (
+            <Link className="header-write" to="/login">Write</Link>
+          )}
         </div>
       </div>
 

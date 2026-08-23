@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { getArticlePath, getSectionPath, siteConfig } from '../data/siteConfig'
 import type { Article, ArticleLayout, EditionKey } from '../types/content'
+import ResolvedImage from './ResolvedImage'
 
 interface ArticleCardProps {
   article: Article
@@ -13,7 +14,7 @@ function formatArticleDate(date: string, edition: EditionKey) {
   return new Intl.DateTimeFormat(siteConfig[edition].dateLocale, {
     month: 'short',
     day: 'numeric',
-  }).format(new Date(`${date}T12:00:00+09:00`))
+  }).format(new Date(date.length === 10 ? `${date}T12:00:00+09:00` : date))
 }
 
 export default function ArticleCard({
@@ -26,15 +27,16 @@ export default function ArticleCard({
   const sectionPath = article.section ? getSectionPath(edition, article.section) : undefined
   const articlePath = article.slug ? getArticlePath(edition, article.slug) : undefined
   const className = `article-card article-card--${variant}`
-  const articleImage = article.image ? (
-    <img
+  const primaryAuthor = article.authors.find((author) => author.id === article.primaryAuthorId) ?? article.authors[0]
+  const articleImage = article.coverImage ? (
+    <ResolvedImage
       className="article-card__image"
-      src={article.image}
-      alt={article.imageAlt ?? ''}
+      reference={article.coverImage}
+      alt={article.coverImageAlt}
       width="1200"
       height="675"
       loading={imagePriority ? 'eager' : 'lazy'}
-      style={{ objectPosition: article.imagePosition ?? 'center' }}
+      style={{ objectPosition: article.coverImagePosition ?? 'center' }}
     />
   ) : null
 
@@ -59,9 +61,9 @@ export default function ArticleCard({
         <h2 className="article-card__headline">
           {articlePath ? <Link to={articlePath}>{article.title}</Link> : article.title}
         </h2>
-        {article.summary && <p className="article-card__summary">{article.summary}</p>}
+        {article.subtitle && <p className="article-card__summary">{article.subtitle}</p>}
         <p className="article-card__meta">
-          <span>{edition === 'korean' ? article.author : `By ${article.author}`}</span>
+          <span>{edition === 'korean' ? primaryAuthor?.name : `By ${primaryAuthor?.name ?? ''}`}</span>
           {article.publishedAt && (
             <>
               <span aria-hidden="true">·</span>
