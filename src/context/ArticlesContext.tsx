@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { articleService } from '../services/articleService'
+import { authService } from '../services/authService'
 import type { Article } from '../types/content'
 
 interface ArticlesContextValue {
@@ -29,6 +30,8 @@ export function ArticlesProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     void refresh()
+    window.addEventListener(authService.eventName, refresh)
+    return () => window.removeEventListener(authService.eventName, refresh)
   }, [refresh])
 
   const value = useMemo(() => ({ articles, loading, error, refresh }), [articles, loading, error, refresh])

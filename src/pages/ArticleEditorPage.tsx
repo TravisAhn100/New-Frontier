@@ -35,19 +35,33 @@ export default function ArticleEditorPage() {
   const [topicInput, setTopicInput] = useState('')
   const [feedback, setFeedback] = useState('')
   const [error, setError] = useState('')
-  const [busyAction, setBusyAction] = useState<'save' | 'preview' | 'publish' | 'image'>()
+  const [busyAction, setBusyAction] = useState<'save' | 'preview' | 'publish' | 'image' | 'delete'>()
   const [toolbarOpen, setToolbarOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
 
   useEffect(() => {
+    let active = true
     if (id) {
       const existing = articles.find((item) => item.id === id)
       if (existing) setArticle(existing)
-      else void articleService.getArticle(id).then(setArticle)
-      return
+      else {
+        void articleService.getArticle(id)
+          .then((loaded) => {
+            if (active) setArticle(loaded)
+          })
+          .catch((nextError) => {
+            if (active) setError(nextError instanceof Error ? nextError.message : 'Unable to load the article.')
+          })
+      }
+      return () => {
+        active = false
+      }
     }
 
     setArticle(articleService.createArticle())
+    return () => {
+      active = false
+    }
   }, [id, articles])
 
   function updateArticle(patch: Partial<Article>) {
@@ -188,13 +202,26 @@ export default function ArticleEditorPage() {
 
   async function confirmDelete() {
     if (!article) return
-    await articleService.deleteArticle(article.id)
-    await refresh()
-    navigate('/edit/articles', { replace: true })
+    setBusyAction('delete')
+    setError('')
+    try {
+      await articleService.deleteArticle(article.id)
+      await refresh()
+      navigate('/edit/articles', { replace: true })
+    } catch (nextError) {
+      setDeleteOpen(false)
+      setError(nextError instanceof Error ? nextError.message : 'Unable to delete the article. Try again.')
+    } finally {
+      setBusyAction(undefined)
+    }
   }
 
   if (!article) {
-    return <p className="editorial-loading">Loading article…</p>
+    return (
+      <p className={`editorial-loading${error ? ' is-error' : ''}`} role={error ? 'alert' : 'status'}>
+        {error || 'Loading article…'}
+      </p>
+    )
   }
 
   const config = siteConfig[article.edition]
@@ -208,9 +235,9 @@ export default function ArticleEditorPage() {
           <h1 id="editor-title">{article.title || 'Untitled draft'}</h1>
         </div>
         <div className="article-editor__action-buttons">
-          <button type="button" onClick={() => void saveDraft()} disabled={Boolean(busyAction)}>✓ <span>Save draft</span></button>
-          <button type="button" onClick={() => void previewArticle()} disabled={Boolean(busyAction)}>▣ <span>Preview</span></button>
-          <button className="is-primary" type="button" onClick={() => void publishArticle()} disabled={Boolean(busyAction)}>↑ <span>Publish</span></button>
+          <button type="button" onClick={() => void saveDraft()} disabled={Boolean(busyAction)}>✓ <span>{busyAction === 'save' ? 'Saving…' : article.status === 'published' ? 'Save changes' : 'Save draft'}</span></button>
+          <button type="button" onClick={() => void previewArticle()} disabled={Boolean(busyAction)}>▣ <span>{busyAction === 'preview' ? 'Preparing…' : 'Preview'}</span></button>
+          <button className="is-primary" type="button" onClick={() => void publishArticle()} disabled={Boolean(busyAction)}>↑ <span>{busyAction === 'publish' ? 'Publishing…' : 'Publish'}</span></button>
           <button className="editor-toolbar-toggle" type="button" aria-expanded={toolbarOpen} onClick={() => setToolbarOpen((open) => !open)}>＋ <span>Tools</span></button>
         </div>
       </header>
@@ -336,7 +363,8 @@ export default function ArticleEditorPage() {
           <section>
             <h2>Cover image</h2>
             <label>Upload image<input type="file" accept="image/*" disabled={busyAction === 'image'} onChange={(event) => void handleCoverImage(event)} /></label>
-            {article.coverImage && <span className="image-stored-status">Cover image ready</span>}
+            {busyAction === 'image' && <span className="image-stored-status">Uploading image…</span>}
+            {article.coverImage && busyAction !== 'image' && <span className="image-stored-status">Cover image ready</span>}
             <label>Caption<input value={article.coverImageCaption} onChange={(event) => updateArticle({ coverImageCaption: event.target.value })} /></label>
             <label>Credit<input value={article.coverImageCredit} onChange={(event) => updateArticle({ coverImageCredit: event.target.value })} /></label>
             <label>Alt text<input value={article.coverImageAlt} onChange={(event) => updateArticle({ coverImageAlt: event.target.value })} /></label>
@@ -365,8 +393,8 @@ export default function ArticleEditorPage() {
             <h2 id="delete-dialog-title">Delete this article?</h2>
             <p>This action cannot be undone.</p>
             <div>
-              <button type="button" onClick={() => setDeleteOpen(false)}>Cancel</button>
-              <button className="is-danger" type="button" onClick={() => void confirmDelete()}>Delete</button>
+              <button type="button" disabled={busyAction === 'delete'} onClick={() => setDeleteOpen(false)}>Cancel</button>
+              <button className="is-danger" type="button" disabled={busyAction === 'delete'} onClick={() => void confirmDelete()}>{busyAction === 'delete' ? 'Deleting…' : 'Delete'}</button>
             </div>
           </section>
         </div>

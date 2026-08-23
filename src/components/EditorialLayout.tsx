@@ -4,9 +4,12 @@ import { authService } from '../services/authService'
 export default function EditorialLayout() {
   const navigate = useNavigate()
 
-  function handleLogout() {
-    authService.logout()
-    navigate('/login', { replace: true })
+  async function handleLogout() {
+    try {
+      await authService.logout()
+    } finally {
+      navigate('/login', { replace: true })
+    }
   }
 
   return (
@@ -21,7 +24,7 @@ export default function EditorialLayout() {
           <Link to="/edit/articles">Edit</Link>
           <Link to="/edit/archive">Archive</Link>
           <Link to="/">View publication</Link>
-          <button type="button" onClick={handleLogout}>Log out</button>
+          <button type="button" onClick={() => void handleLogout()}>Log out</button>
         </nav>
       </header>
       <main className="editorial-main">

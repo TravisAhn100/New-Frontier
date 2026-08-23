@@ -1,0 +1,4 @@
+# Copy this file to .dev.vars for local Worker development.
+# Keep the real production values in Cloudflare Worker secrets, not source control.
+EDITORIAL_PASSWORD=NF2026
+EDITORIAL_SESSION_SECRET=replace-with-a-long-random-local-secret

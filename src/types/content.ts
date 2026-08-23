@@ -77,11 +77,3 @@ export interface ArticleFilters {
   writer?: string
   section?: ArticleSection
 }
-
-export interface StoredImageAsset {
-  id: string
-  blob: Blob
-  fileName: string
-  contentType: string
-  createdAt: string
-}
