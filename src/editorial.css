@@ -6,6 +6,20 @@
   font-family: var(--sans);
 }
 
+.editorial-auth-loading {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  color: var(--teal-deep);
+  background: #f4f3ed;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 .login-page button:focus-visible,
 .editorial-shell button:focus-visible {
   outline: 3px solid var(--yellow);

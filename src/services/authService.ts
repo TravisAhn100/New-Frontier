@@ -1,22 +1,43 @@
-const EDITORIAL_SESSION_KEY = 'nf_editor_authenticated'
-const TEMPORARY_EDITORIAL_PASSWORD = 'NF2026'
+import { apiRequest, ApiError } from './apiClient'
+
+interface AuthState {
+  authenticated: boolean
+}
+
+const AUTH_CHANGED_EVENT = 'nf-auth-changed'
+
+function notifyAuthChanged() {
+  window.dispatchEvent(new Event(AUTH_CHANGED_EVENT))
+}
 
 export const authService = {
-  isAuthenticated() {
-    return sessionStorage.getItem(EDITORIAL_SESSION_KEY) === 'true'
-  },
+  eventName: AUTH_CHANGED_EVENT,
 
-  login(password: string) {
-    const authenticated = password === TEMPORARY_EDITORIAL_PASSWORD
-
-    if (authenticated) {
-      sessionStorage.setItem(EDITORIAL_SESSION_KEY, 'true')
+  async isAuthenticated() {
+    try {
+      const state = await apiRequest<AuthState>('/api/auth/session')
+      return state.authenticated
+    } catch {
+      return false
     }
-
-    return authenticated
   },
 
-  logout() {
-    sessionStorage.removeItem(EDITORIAL_SESSION_KEY)
+  async login(password: string) {
+    try {
+      const state = await apiRequest<AuthState>('/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ password }),
+      })
+      notifyAuthChanged()
+      return state.authenticated
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 401) return false
+      throw error
+    }
+  },
+
+  async logout() {
+    await apiRequest<AuthState>('/api/auth/logout', { method: 'POST' })
+    notifyAuthChanged()
   },
 }

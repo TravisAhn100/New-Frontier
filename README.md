@@ -5,11 +5,13 @@ This repository contains the International and Korean editions of the New Fronti
 ## Install and run
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm run build
+pnpm run db:migrate:local
+pnpm run dev:api
 ```
 
-Create a production build with `npm run build`.
+Run `pnpm run dev` in a second terminal for the Vite interface. Its `/api` requests are proxied to the local Cloudflare Worker on port 8787.
 
 ## Routes
 
@@ -24,9 +26,11 @@ Create a production build with `npm run build`.
 
 ## Editorial prototype
 
-The prototype password is `NF2026`. Authentication is stored only for the current browser session and is not production security.
+The temporary editorial password remains `NF2026`, but it is now checked by the Cloudflare Worker instead of being embedded in the browser bundle. Successful login creates a signed, HTTP-only session cookie. This remains prototype authentication: it has no individual accounts, roles, recovery, audit trail, or rate limiting.
 
-Article records use a centralized service and IndexedDB repository. Uploaded cover and inline images are kept in a separate IndexedDB object store and article records store image references instead of image binaries. This device-local implementation is intentionally replaceable: a production editorial deployment should use server-side authentication, a shared database such as Cloudflare D1, and object storage such as R2.
+Cloudflare D1 is the authoritative store for drafts, published articles, metadata, and structured body blocks. Cloudflare R2 stores uploaded cover and inline image files. The React application communicates through the existing article service and a same-origin Worker API; it no longer reads or writes IndexedDB.
+
+See [Cloudflare shared publishing setup](docs/cloudflare-shared-publishing.md) before deploying. The checked-in Wrangler configuration contains a placeholder D1 database ID that must be replaced with the real resource ID.
 
 ## Masthead assets
 

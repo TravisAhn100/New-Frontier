@@ -8,7 +8,6 @@ import type {
   Topic,
 } from '../types/content'
 import { articleRepository } from './articleRepository'
-import { STORED_IMAGE_PREFIX } from './imageService'
 
 function createId(prefix: string) {
   return `${prefix}-${crypto.randomUUID()}`
@@ -167,7 +166,7 @@ export const articleService = {
   },
 
   async saveDraft(article: Article) {
-    const normalized = normalizeArticle(article, 'draft')
+    const normalized = normalizeArticle(article, article.status === 'published' ? 'published' : 'draft')
     normalized.slug = await ensureUniqueSlug(normalized)
     return articleRepository.saveArticle(normalized)
   },
@@ -187,11 +186,9 @@ export const articleService = {
     if (errors.length > 0) throw new Error(errors.join(' '))
 
     normalized.slug = await ensureUniqueSlug({ ...normalized, slug: slugify(normalized.slug || normalized.title) })
-    normalized.publishedAt = normalized.publishedAt
-      ? normalized.publishedAt.length === 10
-        ? `${normalized.publishedAt}T09:00:00+09:00`
-        : normalized.publishedAt
-      : new Date().toISOString()
+    normalized.publishedAt = normalized.publishedAt?.length === 10
+      ? `${normalized.publishedAt}T09:00:00+09:00`
+      : normalized.publishedAt
     return articleRepository.saveArticle(normalized)
   },
 
@@ -202,13 +199,6 @@ export const articleService = {
   },
 
   async deleteArticle(id: string) {
-    const article = await articleRepository.getArticle(id)
-    const imageReferences = article
-      ? [article.coverImage, ...article.body.filter((block) => block.type === 'image').map((block) => block.imageRef)]
-        .filter((reference): reference is string => Boolean(reference?.startsWith(STORED_IMAGE_PREFIX)))
-      : []
-
     await articleRepository.deleteArticle(id)
-    await Promise.all(imageReferences.map((reference) => articleRepository.deleteImage(reference.slice(STORED_IMAGE_PREFIX.length))))
   },
 }
