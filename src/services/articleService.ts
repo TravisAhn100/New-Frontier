@@ -8,6 +8,7 @@ import type {
   Topic,
 } from '../types/content'
 import { articleRepository } from './articleRepository'
+import { normalizeArticlePlacement } from '../utils/articlePlacement'
 
 function createId(prefix: string) {
   return `${prefix}-${crypto.randomUUID()}`
@@ -65,6 +66,7 @@ export function createEmptyArticle(): Article {
     createdAt: now,
     updatedAt: now,
     status: 'draft',
+    placement: 'main',
     featured: false,
     layout: 'standard',
   }
@@ -94,6 +96,7 @@ function normalizeArticle(article: Article, status: ArticleStatus) {
     coverImageAlt: article.coverImageAlt.trim(),
     updatedAt: now,
     status,
+    placement: normalizeArticlePlacement(article.placement, article.featured),
   }
 }
 

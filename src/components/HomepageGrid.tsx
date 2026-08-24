@@ -1,4 +1,5 @@
 import type { Article, EditionKey } from '../types/content'
+import { getArticlePlacement } from '../utils/articlePlacement'
 import ArticleCard from './ArticleCard'
 
 interface HomepageGridProps {
@@ -7,7 +8,9 @@ interface HomepageGridProps {
 }
 
 export default function HomepageGrid({ articles, edition }: HomepageGridProps) {
-  const lead = articles.find((article) => article.featured) ?? articles[0]
+  const lead = articles.find((article) => getArticlePlacement(article) === 'headline')
+    ?? articles.find((article) => article.featured)
+    ?? articles[0]
   if (!lead) return null
   const remaining = articles.filter((article) => article.id !== lead.id)
   const sideStories = remaining.slice(0, 2)

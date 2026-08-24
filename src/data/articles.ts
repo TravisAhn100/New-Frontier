@@ -285,6 +285,7 @@ function normalizeSeedArticle(seed: LegacyArticleSeed): Article {
     updatedAt: timestamp,
     publishedAt: seed.publishedAt,
     status: 'published',
+    placement: seed.featured ? 'headline' : 'main',
     featured: seed.featured ?? false,
     layout: seed.layout,
   }

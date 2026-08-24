@@ -25,7 +25,7 @@ export default function PublicArticle({ article, edition, preview = false }: Pub
   const showSubtitle = edition === 'international' || preview
 
   return (
-    <article className={`article-page article-page--${edition}`} aria-labelledby="article-title">
+    <article className={`article-page article-page--${edition}${preview ? ' article-page--preview' : ''}`} aria-labelledby="article-title">
       <header className="article-page__header">
         {preview && <p className="article-page__preview-label">Unpublished preview</p>}
         {article.section && sectionPath && (

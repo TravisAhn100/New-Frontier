@@ -4,11 +4,13 @@ import type {
   ArticleAuthor,
   ArticleBlock,
   ArticleLayout,
+  ArticlePlacement,
   ArticleSection,
   ArticleStatus,
   EditionKey,
   Topic,
 } from '../src/types/content'
+import { normalizeArticlePlacement } from '../src/utils/articlePlacement'
 import { isEditorialRequest, requireEditorialRequest } from './auth'
 import { Env, HttpError, jsonResponse } from './types'
 
@@ -33,6 +35,7 @@ interface ArticleRow {
   updated_at: string
   published_at: string | null
   status: ArticleStatus
+  placement: ArticlePlacement | null
   featured: number
   layout: ArticleLayout
 }
@@ -73,6 +76,7 @@ function rowToArticle(row: ArticleRow): Article {
     updatedAt: row.updated_at,
     publishedAt: row.published_at ?? undefined,
     status: row.status,
+    placement: normalizeArticlePlacement(row.placement, Boolean(row.featured)),
     featured: Boolean(row.featured),
     layout: row.layout,
   }
@@ -100,6 +104,7 @@ function insertStatement(database: D1Database, article: Article, ignoreExisting 
       updated_at = excluded.updated_at,
       published_at = excluded.published_at,
       status = excluded.status,
+      placement = excluded.placement,
       featured = excluded.featured,
       layout = excluded.layout
   `
@@ -108,8 +113,8 @@ function insertStatement(database: D1Database, article: Article, ignoreExisting 
       id, slug, title, subtitle, edition, section,
       topics_json, topic_slugs_json, authors_json, primary_author_id,
       cover_image, cover_image_caption, cover_image_credit, cover_image_alt, cover_image_position,
-      body_json, created_at, updated_at, published_at, status, featured, layout
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      body_json, created_at, updated_at, published_at, status, placement, featured, layout
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ${updateExisting}
   `).bind(
     article.id,
@@ -132,9 +137,27 @@ function insertStatement(database: D1Database, article: Article, ignoreExisting 
     article.updatedAt,
     article.publishedAt ?? null,
     article.status,
+    article.placement,
     article.featured ? 1 : 0,
     article.layout,
   )
+}
+
+async function persistArticle(env: Env, article: Article) {
+  const statement = insertStatement(env.DB, article)
+  if (article.status === 'published' && article.placement === 'headline') {
+    await env.DB.batch([
+      env.DB.prepare(`
+        UPDATE articles
+        SET placement = 'main', featured = 0
+        WHERE edition = ? AND status = 'published' AND placement = 'headline' AND id <> ?
+      `).bind(article.edition, article.id),
+      statement,
+    ])
+    return
+  }
+
+  await statement.run()
 }
 
 async function ensureSeedArticles(env: Env) {
@@ -188,6 +211,10 @@ function normalizeArticle(input: unknown, id: string, existing?: Article): Artic
   const edition = editions.includes(candidate.edition as EditionKey) ? candidate.edition as EditionKey : 'international'
   const section = sections.includes(candidate.section as ArticleSection) ? candidate.section as ArticleSection : undefined
   const status = statuses.includes(candidate.status as ArticleStatus) ? candidate.status as ArticleStatus : 'draft'
+  const placement = normalizeArticlePlacement(
+    candidate.placement ?? existing?.placement,
+    candidate.featured ?? existing?.featured,
+  )
   const layout = layouts.includes(candidate.layout as ArticleLayout) ? candidate.layout as ArticleLayout : 'standard'
   const title = normalizeString(candidate.title)
   const slug = slugify(normalizeString(candidate.slug) || title) || `draft-${id.slice(-8)}`
@@ -245,7 +272,8 @@ function normalizeArticle(input: unknown, id: string, existing?: Article): Artic
     updatedAt: now,
     publishedAt,
     status,
-    featured: Boolean(candidate.featured),
+    placement,
+    featured: placement === 'headline',
     layout,
   }
 }
@@ -310,7 +338,7 @@ export async function handleArticleRequest(request: Request, env: Env) {
     const input = await request.json<Partial<Article>>()
     const id = normalizeString(input.id) || `article-${crypto.randomUUID()}`
     const article = normalizeArticle(input, id)
-    await insertStatement(env.DB, article).run()
+    await persistArticle(env, article)
     return jsonResponse(article, { status: 201 })
   }
 
@@ -329,7 +357,7 @@ export async function handleArticleRequest(request: Request, env: Env) {
     if (request.method === 'PUT') {
       await requireEditorialRequest(request, env)
       const article = normalizeArticle(await request.json<Partial<Article>>(), id, existing)
-      await insertStatement(env.DB, article).run()
+      await persistArticle(env, article)
       return jsonResponse(article, { status: existing ? 200 : 201 })
     }
 
