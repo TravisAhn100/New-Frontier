@@ -41,7 +41,7 @@ const editions: EditionKey[] = ['international', 'korean']
 const sections: ArticleSection[] = ['news', 'culture', 'opinion', 'school']
 const statuses: ArticleStatus[] = ['draft', 'published', 'archived']
 const layouts: ArticleLayout[] = ['lead', 'secondary', 'standard', 'brief']
-const seedVersion = 'baseline-articles-v1'
+const seedVersion = 'baseline-articles-v2-example-article'
 
 function parseJson<T>(value: string, fallback: T) {
   try {

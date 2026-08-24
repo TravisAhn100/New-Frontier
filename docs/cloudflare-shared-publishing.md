@@ -80,10 +80,10 @@ After the real D1 database ID, R2 bucket, secrets, and remote migration are in p
 
 ```bash
 pnpm run build
-pnpm exec wrangler deploy
+pnpm run deploy
 ```
 
-The Worker serves compiled assets and handles `/api/*` before the SPA fallback.
+The production deploy command applies any pending D1 migrations before deploying the Worker. The Worker serves compiled assets and handles `/api/*` before the SPA fallback.
 
 ## Data and image behavior
 

@@ -4,6 +4,25 @@ import { Env, HttpError, jsonResponse } from './types'
 
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024
 
+function safeApiError(error: unknown) {
+  if (!(error instanceof Error)) {
+    return { message: 'The server could not complete this request.', status: 500 }
+  }
+
+  if (/no such table: (articles|app_metadata)/i.test(error.message)) {
+    return {
+      message: 'The editorial database has not been initialized. Apply the pending D1 migrations.',
+      status: 503,
+    }
+  }
+
+  if (/UNIQUE constraint failed/.test(error.message)) {
+    return { message: 'That article slug is already in use for this edition.', status: 409 }
+  }
+
+  return { message: 'The server could not complete this request.', status: 500 }
+}
+
 function safeFileName(value: string) {
   return value
     .normalize('NFKD')
@@ -70,10 +89,7 @@ export default {
     } catch (error) {
       if (error instanceof HttpError) return jsonResponse({ error: error.message }, { status: error.status })
       console.error('Unhandled New Frontier API error', error)
-      const message = error instanceof Error && /UNIQUE constraint failed/.test(error.message)
-        ? 'That article slug is already in use for this edition.'
-        : 'The server could not complete this request.'
-      const status = message.startsWith('That article slug') ? 409 : 500
+      const { message, status } = safeApiError(error)
       return jsonResponse({ error: message }, { status })
     }
   },
