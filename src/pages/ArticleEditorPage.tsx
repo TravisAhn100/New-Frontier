@@ -194,7 +194,8 @@ export default function ArticleEditorPage() {
       setFeedback('Published')
       if (!id) navigate(`/edit/article/${published.id}`, { replace: true })
     } catch (nextError) {
-      setError(nextError instanceof Error ? nextError.message : 'Unable to publish the article.')
+      const message = nextError instanceof Error ? nextError.message : 'Unable to publish the article.'
+      setError(`Publishing failed: ${message}`)
     } finally {
       setBusyAction(undefined)
     }
