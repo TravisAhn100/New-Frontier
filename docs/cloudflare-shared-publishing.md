@@ -39,7 +39,7 @@ pnpm exec wrangler secret put EDITORIAL_PASSWORD
 pnpm exec wrangler secret put EDITORIAL_SESSION_SECRET
 ```
 
-Enter `NF2026` for `EDITORIAL_PASSWORD` if the existing prototype password must remain active. Use a long, independently generated random value for `EDITORIAL_SESSION_SECRET`. Never add either production value to source control.
+Enter the intended current production password at Wrangler's secure prompt. Use a long, independently generated random value for `EDITORIAL_SESSION_SECRET`. Never add either production value to source control.
 
 The signed editorial session lasts eight hours by default. `EDITORIAL_SESSION_TTL_SECONDS` in `wrangler.jsonc` controls that duration.
 
