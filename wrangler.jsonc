@@ -13,7 +13,7 @@
     {
       "binding": "DB",
       "database_name": "new-frontier-editorial",
-      "database_id": "2026-8-24",
+      "database_id": "2026-8-23",
       "migrations_dir": "migrations"
     }
   ],
