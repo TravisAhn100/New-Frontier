@@ -26,11 +26,25 @@ Run `pnpm run dev` in a second terminal for the Vite interface. Its `/api` reque
 
 ## Editorial prototype
 
-The temporary editorial password remains `NF2026`, but it is now checked by the Cloudflare Worker instead of being embedded in the browser bundle. Successful login creates a signed, HTTP-only session cookie. This remains prototype authentication: it has no individual accounts, roles, recovery, audit trail, or rate limiting.
+The temporary production editorial password is stored as an encrypted Cloudflare Worker secret and is checked by the Worker instead of being embedded in the browser bundle. Successful login creates a signed, HTTP-only session cookie. This remains prototype authentication: it has no individual accounts, roles, recovery, audit trail, or rate limiting.
 
 Cloudflare D1 is the authoritative store for drafts, published articles, metadata, and structured body blocks. Cloudflare R2 stores uploaded cover and inline image files. The React application communicates through the existing article service and a same-origin Worker API; it no longer reads or writes IndexedDB.
 
-See [Cloudflare shared publishing setup](docs/cloudflare-shared-publishing.md) before deploying. The checked-in Wrangler configuration contains a placeholder D1 database ID that must be replaced with the real resource ID.
+See [Cloudflare shared publishing setup](docs/cloudflare-shared-publishing.md) before deploying.
+
+## Changing the Editorial Password
+
+The production editorial password is intentionally not hard-coded in frontend or Worker source code. It is stored as the encrypted `EDITORIAL_PASSWORD` secret on the `new-frontier` Cloudflare Worker.
+
+To change the production password, run:
+
+```bash
+pnpm exec wrangler secret put EDITORIAL_PASSWORD
+```
+
+Enter the new password at Wrangler's secure prompt. Wrangler updates the encrypted Worker secret and deploys a new Worker version; the value must never be added to `wrangler.jsonc`, TypeScript, JavaScript, or a committed environment file.
+
+For local development, copy `.dev.vars.example` to the ignored `.dev.vars` file and set `EDITORIAL_PASSWORD` and `EDITORIAL_SESSION_SECRET` there. Use a long, independently generated local session secret and never commit `.dev.vars`.
 
 ## Masthead assets
 

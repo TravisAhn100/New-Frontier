@@ -23,6 +23,12 @@
       "bucket_name": "new-frontier-article-images"
     }
   ],
+  "secrets": {
+    "required": [
+      "EDITORIAL_PASSWORD",
+      "EDITORIAL_SESSION_SECRET"
+    ]
+  },
   "vars": {
     "EDITORIAL_SESSION_TTL_SECONDS": "28800"
   }
