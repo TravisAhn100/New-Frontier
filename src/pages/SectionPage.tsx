@@ -2,6 +2,7 @@ import ArticleCard from '../components/ArticleCard'
 import { useArticles } from '../context/ArticlesContext'
 import { siteConfig } from '../data/siteConfig'
 import type { EditionKey, SectionKey } from '../types/content'
+import { appearsOnSectionPage } from '../utils/articlePlacement'
 
 interface SectionPageProps {
   edition: EditionKey
@@ -24,6 +25,7 @@ export default function SectionPage({ edition, section }: SectionPageProps) {
     article.edition === edition
     && article.status === 'published'
     && article.section === section
+    && appearsOnSectionPage(article)
   ))
 
   return (

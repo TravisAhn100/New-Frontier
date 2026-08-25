@@ -6,6 +6,8 @@ export type ArticleSection = Exclude<SectionKey, 'info'>
 
 export type ArticleLayout = 'lead' | 'secondary' | 'standard' | 'brief'
 
+export type ArticlePlacement = 'headline' | 'main' | 'homepage' | 'section'
+
 export type ArticleStatus = 'draft' | 'published' | 'archived'
 
 export type ArticleBlockType = 'paragraph' | 'heading' | 'quote' | 'image' | 'link'
@@ -65,6 +67,7 @@ export interface Article {
   updatedAt: string
   publishedAt?: string
   status: ArticleStatus
+  placement: ArticlePlacement
   featured: boolean
   layout: ArticleLayout
 }

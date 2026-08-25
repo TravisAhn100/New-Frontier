@@ -467,6 +467,18 @@
   font-style: italic;
 }
 
+.article-editor--korean .article-editor__title-input,
+.article-editor--korean .article-editor__deck-input,
+.article-editor--korean .editor-block textarea {
+  font-family: var(--korean-editorial);
+}
+
+.article-preview-shell .article-page--korean.article-page--preview h1,
+.article-preview-shell .article-page--korean.article-page--preview .article-page__deck,
+.article-preview-shell .article-page--korean.article-page--preview .article-page__body {
+  font-family: var(--korean-editorial);
+}
+
 .editor-block__fields,
 .article-editor__toolbar section {
   display: grid;

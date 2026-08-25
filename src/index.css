@@ -9,6 +9,8 @@
   --paper: #ffffff;
   --serif: Georgia, 'Times New Roman', serif;
   --sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --korean-public: 'Do Hyeon', sans-serif;
+  --korean-editorial: 'Song Myung', serif;
   --page-width: 1280px;
   --page-gutter: clamp(16px, 3vw, 34px);
   color: var(--ink);
@@ -77,9 +79,9 @@ a:focus-visible {
 }
 
 .site-shell--korean {
-  --serif: 'Do Hyeon', sans-serif;
-  --sans: 'Do Hyeon', sans-serif;
-  font-family: 'Do Hyeon', sans-serif;
+  --serif: var(--korean-public);
+  --sans: var(--korean-public);
+  font-family: var(--korean-public);
 }
 
 .site-shell--korean .header-top__inner {
@@ -114,12 +116,14 @@ a:focus-visible {
   text-transform: uppercase;
 }
 
-.header-top__inner--international {
+.header-top__inner--international,
+.header-top__inner--korean {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
 }
 
-.header-top__inner--international .edition-switcher {
+.header-top__inner--international .edition-switcher,
+.header-top__inner--korean .edition-switcher {
   justify-self: center;
 }
 
@@ -756,7 +760,8 @@ a:focus-visible {
     line-height: 1.25;
   }
 
-  .header-top__inner--international time {
+  .header-top__inner--international time,
+  .header-top__inner--korean time {
     max-width: 100%;
   }
 

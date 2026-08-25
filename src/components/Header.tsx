@@ -18,9 +18,7 @@ export default function Header({ edition }: HeaderProps) {
         <div className={`header-top__inner page-width header-top__inner--${edition}`}>
           <time dateTime={now.toISOString()}>{formatPublicationDate(edition, now)}</time>
           <EditionSwitcher edition={edition} />
-          {edition === 'international' && (
-            <Link className="header-write" to="/login">Write</Link>
-          )}
+          <Link className="header-write" to="/login">{edition === 'korean' ? '글쓰기' : 'Write'}</Link>
         </div>
       </div>
 

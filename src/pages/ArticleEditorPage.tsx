@@ -10,7 +10,8 @@ import {
   slugify,
 } from '../services/articleService'
 import { imageService } from '../services/imageService'
-import type { Article, ArticleBlock, ArticleBlockType, ArticleSection, EditionKey } from '../types/content'
+import type { Article, ArticleBlock, ArticleBlockType, ArticlePlacement, ArticleSection, EditionKey } from '../types/content'
+import { articlePlacementOptions } from '../utils/articlePlacement'
 
 const blockTools: Array<{ type: ArticleBlockType; symbol: string; label: string }> = [
   { type: 'paragraph', symbol: 'T', label: 'Text' },
@@ -229,7 +230,7 @@ export default function ArticleEditorPage() {
   const primaryAuthor = article.authors[0] ?? { id: '', name: '' }
 
   return (
-    <section className="article-editor" aria-labelledby="editor-title">
+    <section className={`article-editor article-editor--${article.edition}`} aria-labelledby="editor-title">
       <header className="article-editor__actions">
         <div>
           <p>{id ? 'Edit article' : 'New article'}</p>
@@ -340,6 +341,11 @@ export default function ArticleEditorPage() {
             </label>
             <label>Slug
               <input value={article.slug} onChange={(event) => updateArticle({ slug: slugify(event.target.value) })} />
+            </label>
+            <label>Placement
+              <select value={article.placement} onChange={(event) => updateArticle({ placement: event.target.value as ArticlePlacement })}>
+                {articlePlacementOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+              </select>
             </label>
           </section>
 
